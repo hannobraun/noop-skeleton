@@ -8,14 +8,14 @@ started with the framework, just clone this repository and start adding your own
 code.
 
 Like noop itself, this skeleton project is written in CoffeeScript. If you want
-to use JavaScript instead, it shouldn't be too hard to adapt the code here.
+to use JavaScript instead, it shouldn't be too hard to adapt the project.
 
 
 ## How do I get started?
 
 1. Clone this repository.
-2. Install (Node.js)[http://nodejs.org]
-3. Install (CoffeeScript)[http://coffeescript.org] using npm.
+2. Install [Node.js](http://nodejs.org)
+3. Install [CoffeeScript](http://coffeescript.org) using npm.
 4. Execute ./develop
 5. Open index.html and index-test.html in a browser.
 6. Write code!
