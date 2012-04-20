@@ -27,6 +27,11 @@ define "Logic", [ "Input", "Entities" ], ( Input, Entities ) ->
 	module =
 		createGameState: ->
 			gameState =
+				# Change this, if you want the camera to point somewhere else.
+				focus: [ 0, 0 ]
+
+				# Game entities are made up of components. Those are stored
+				# separately.
 				components:
 					positions: {}
 					movements: {}
