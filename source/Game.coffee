@@ -8,15 +8,15 @@ define "Game", [ "Images", "Rendering", "Input", "MainLoop", "Logic", "Graphics"
 		# Some keys have unwanted default behavior on website, like scrolling.
 		# Fortunately we can tell the Input module to prevent the default
 		# behavior of some keys.
-		keysToPreventDefaultFor = [
+		Input.preventDefaultFor( [
 			"up arrow"
 			"down arrow"
 			"left arrow"
 			"right arrow"
-			"space" ]
+			"space" ] )
 
 		display      = Rendering.createDisplay()
-		currentInput = Input.createCurrentInput( keysToPreventDefaultFor )
+		currentInput = Input.createCurrentInput()
 		gameState    = Logic.createGameState()
 		renderState  = Graphics.createRenderState()
 
