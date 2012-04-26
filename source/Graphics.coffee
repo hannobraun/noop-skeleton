@@ -14,8 +14,9 @@ define "Graphics", [ "Rendering", "Camera", "Vec2" ], ( Rendering, Camera, Vec2 
 			for entityId, position of gameState.components.positions
 				imageId = gameState.components.imageIds[ entityId ]
 
-				renderable = Rendering.createRenderable( "image", imageId )
-				renderable.position = Vec2.copy( position )
+				renderable = Rendering.createRenderable( "image" )
+				renderable.resourceId = imageId
+				renderable.position   = Vec2.copy( position )
 
 				renderState.renderables.push( renderable )
 

@@ -30,12 +30,9 @@ define "Logic", [ "Input", "Entities" ], ( Input, Entities ) ->
 				# Change this, if you want the camera to point somewhere else.
 				focus: [ 0, 0 ]
 
-				# Game entities are made up of components. Those are stored
-				# separately.
-				components:
-					positions: {}
-					movements: {}
-					imageIds : {}
+				# Game entities are made up of components. The components will
+				# be stored in this map.
+				components: {}
 
 		initGameState: ( gameState ) ->
 			# These are the shortcuts we will use for creating and destroying

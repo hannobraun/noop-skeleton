@@ -1,61 +1,38 @@
-# noop's Loader module expects a module named "Game" to exist. Loader will load
-# all images specified in imagePaths and pass them to initGame.
-define "Game", [ "Rendering", "Input", "Logic", "Graphics" ], ( Rendering, Input, Logic, Graphics )->
-	requestAnimFrame = window.requestAnimationFrame ||
-		window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame ||
-		window.msRequestAnimationFrame ||
-		( callback ) ->
-			window.setTimeout( callback, 1000 / 60 )
+define "Game", [ "Images", "Rendering", "Input", "MainLoop", "Logic", "Graphics" ], ( Images, Rendering, Input, MainLoop, Logic, Graphics )->
+	Images.loadImages [ "images/star.png" ], ( rawImages ) ->
+		images = Images.process( rawImages )
 
-	module =
-		# You can ignore this. It's just part of the example for how to set up
-		# unit tests. See test directory.
-		itIsAwesome: true
+		renderData =
+			"image": images
 
-		# Images that you want to use should be defined here. They will be
-		# loaded by noop's Loader module and passed into the initGame function.
-		imagePaths: [
-			"images/star.png" ]
+		# Some keys have unwanted default behavior on website, like scrolling.
+		# Fortunately we can tell the Input module to prevent the default
+		# behavior of some keys.
+		keysToPreventDefaultFor = [
+			"up arrow"
+			"down arrow"
+			"left arrow"
+			"right arrow"
+			"space" ]
 
-		# Will be called by Loader when the images have been loaded.
-		initGame: ( images ) ->
-			renderData =
-				"image": images
+		display      = Rendering.createDisplay()
+		currentInput = Input.createCurrentInput( keysToPreventDefaultFor )
+		gameState    = Logic.createGameState()
+		renderState  = Graphics.createRenderState()
 
-			display      = Rendering.createDisplay()
-			currentInput = Input.createCurrentInput()
-			gameState    = Logic.createGameState()
-			renderState  = Graphics.createRenderState()
+		Logic.initGameState( gameState )
 
-			Logic.initGameState( gameState )
-
-			lastTimeInMs = Date.now()
-
-			main = ( timeInMs ) ->
-				passedTimeInMs = timeInMs - lastTimeInMs
-				if passedTimeInMs > 1000 / 30
-					passedTimeInMs = 1000 / 30
-
-				timeInS       = timeInMs / 1000
-				passedTimeInS = passedTimeInMs / 1000
-
-				lastTimeInMs = timeInMs
-
-				Logic.updateGameState(
-					gameState,
-					currentInput,
-					timeInS,
-					passedTimeInS )
-				Graphics.updateRenderState(
-					renderState,
-					gameState )
-				Rendering.render(
-					display,
-					renderData,
-					renderState.renderables )
-
-				requestAnimFrame( main )
-
-			main( lastTimeInMs )
+		MainLoop.execute ( currentTimeInS, passedTimeInS ) ->
+			Logic.updateGameState(
+				gameState,
+				currentInput,
+				currentTimeInS,
+				passedTimeInS )
+			Graphics.updateRenderState(
+				renderState,
+				gameState )
+			Rendering.render(
+				Rendering.drawFunctions,
+				display,
+				renderData,
+				renderState.renderables )
