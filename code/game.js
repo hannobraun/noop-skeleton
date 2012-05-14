@@ -428,7 +428,9 @@
     var defaultCallNextFrame, maxPassedTimeInMs, module;
     maxPassedTimeInMs = 1000 / 30;
     defaultCallNextFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(f) {
-      return window.setTimeout(f, 1000 / 60, Date.now());
+      return window.setTimeout(function() {
+        return f(Date.now());
+      }, 1000 / 60);
     };
     return module = {
       execute: function(f, callNextFrame) {
