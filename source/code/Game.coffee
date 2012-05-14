@@ -5,7 +5,7 @@ define "Game", [ "Images", "Rendering", "Input", "MainLoop", "Logic", "Graphics"
 		renderData =
 			"image": images
 
-		# Some keys have unwanted default behavior on website, like scrolling.
+		# Some keys have unwanted default behavior on websites, like scrolling.
 		# Fortunately we can tell the Input module to prevent the default
 		# behavior of some keys.
 		Input.preventDefaultFor( [
