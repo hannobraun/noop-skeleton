@@ -1,4 +1,4 @@
-define "Logic", [ "Input", "Entities" ], ( Input, Entities ) ->
+define "Logic", [ "Input", "Entities", "Vec2" ], ( Input, Entities, Vec2 ) ->
 	nextEntityId = 0
 
 	entityFactories =
@@ -64,3 +64,5 @@ define "Logic", [ "Input", "Entities" ], ( Input, Entities ) ->
 				angle = timeInS * movement.speed
 				position[ 0 ] = movement.radius * Math.cos( angle )
 				position[ 1 ] = movement.radius * Math.sin( angle )
+
+				Vec2.add( position, currentInput.pointerPosition )

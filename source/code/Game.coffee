@@ -16,7 +16,7 @@ define "Game", [ "Images", "Rendering", "Input", "MainLoop", "Logic", "Graphics"
 			"space" ] )
 
 		display      = Rendering.createDisplay()
-		currentInput = Input.createCurrentInput()
+		currentInput = Input.createCurrentInput( display )
 		gameState    = Logic.createGameState()
 		renderState  = Graphics.createRenderState()
 
