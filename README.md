@@ -34,6 +34,7 @@ This project features a directory structure that has proven beneficial for noop
 projects. Please understand that noop doesn't enforce this directory structure
 in any way, so you're free to change it as you like.
 
+<pre>
 + root - Miscellaneous files that don't belong anywhere else.
 |
 +-+ source - Source files created and modified by developers, be it code or art.
@@ -54,3 +55,4 @@ in any way, so you're free to change it as you like.
              a "cp -r --dereference public path/to/deployment". This assumes
              that you're using Linux or something similar (sorry Windows users,
              you have to figure something out).
+</pre>
