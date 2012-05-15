@@ -17,7 +17,7 @@ to use JavaScript instead, it shouldn't be too hard to adapt the project.
 2. Install [Node.js](http://nodejs.org)
 3. Install [CoffeeScript](http://coffeescript.org) using npm.
 4. Execute ./develop
-5. Open index.html and index-test.html in a browser.
+5. Open public/index.html and test/index.html in a browser.
 6. Write code!
 
 
