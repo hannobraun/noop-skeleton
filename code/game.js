@@ -386,6 +386,7 @@
         context = canvas.getContext("2d");
         context.translate(canvas.width / 2, canvas.height / 2);
         return display = {
+          canvas: canvas,
           context: context,
           size: [canvas.width, canvas.height]
         };
@@ -453,7 +454,7 @@
   });
 
   define("Input", [], function() {
-    var ensureKeyNameIsValid, keyCode, keyCodesByName, keyName, keyNameArrayToKeyCodeSet, keyNamesByCode, module;
+    var ensureKeyNameIsValid, keyCode, keyCodesByName, keyName, keyNameArrayToKeyCodeSet, keyNamesByCode, module, mouseKeyCodesByName, mouseKeyNamesByCode, updatePointerPosition;
     keyNamesByCode = {
       8: "backspace",
       9: "tab",
@@ -555,13 +556,23 @@
       221: "close braket",
       222: "single quote"
     };
+    mouseKeyNamesByCode = {
+      0: "left mouse button",
+      1: "middle mouse button",
+      2: "right mouse button"
+    };
     keyCodesByName = {};
     for (keyCode in keyNamesByCode) {
       keyName = keyNamesByCode[keyCode];
       keyCodesByName[keyName] = parseInt(keyCode);
     }
+    mouseKeyCodesByName = {};
+    for (keyCode in mouseKeyNamesByCode) {
+      keyName = mouseKeyNamesByCode[keyCode];
+      mouseKeyCodesByName[keyName] = parseInt(keyCode);
+    }
     ensureKeyNameIsValid = function(keyName) {
-      if (keyCodesByName[keyName] == null) {
+      if (!((keyCodesByName[keyName] != null) || (mouseKeyCodesByName[keyName] != null))) {
         throw "\"" + keyName + "\" is not a valid key name.";
       }
     };
@@ -575,9 +586,26 @@
       }
       return keyCodeSet;
     };
+    updatePointerPosition = function(pointerPosition, display, event) {
+      var element, left, top;
+      element = display.canvas;
+      left = 0;
+      top = 0;
+      while (element != null) {
+        left += element.offsetLeft;
+        top += element.offsetTop;
+        element = element.offsetParent;
+      }
+      pointerPosition[0] = event.clientX - left + window.pageXOffset;
+      pointerPosition[1] = event.clientY - top + window.pageYOffset;
+      pointerPosition[0] -= display.size[0] / 2;
+      return pointerPosition[1] -= display.size[1] / 2;
+    };
     return module = {
       keyNamesByCode: keyNamesByCode,
+      mouseKeyNamesByCode: mouseKeyNamesByCode,
       keyCodesByName: keyCodesByName,
+      mouseKeyCodesByName: mouseKeyCodesByName,
       preventDefaultFor: function(keyNames) {
         var keyCodeSet;
         keyCodeSet = keyNameArrayToKeyCodeSet(keyNames);
@@ -587,16 +615,30 @@
           }
         });
       },
-      createCurrentInput: function() {
+      createCurrentInput: function(display) {
         var currentInput;
-        currentInput = {};
+        currentInput = {
+          pressedKeys: {},
+          pointerPosition: [0, 0]
+        };
         window.addEventListener("keydown", function(keyDownEvent) {
           keyName = keyNamesByCode[keyDownEvent.keyCode];
-          return currentInput[keyName] = true;
+          return currentInput.pressedKeys[keyName] = true;
         });
         window.addEventListener("keyup", function(keyUpEvent) {
           keyName = keyNamesByCode[keyUpEvent.keyCode];
-          return currentInput[keyName] = false;
+          return currentInput.pressedKeys[keyName] = false;
+        });
+        window.addEventListener("mousedown", function(event) {
+          keyName = mouseKeyNamesByCode[event.button];
+          return currentInput.pressedKeys[keyName] = true;
+        });
+        window.addEventListener("mouseup", function(event) {
+          keyName = mouseKeyNamesByCode[event.button];
+          return currentInput.pressedKeys[keyName] = false;
+        });
+        display.canvas.addEventListener("mousemove", function(mouseMoveEvent) {
+          return updatePointerPosition(currentInput.pointerPosition, display, mouseMoveEvent);
         });
         return currentInput;
       },
@@ -612,7 +654,7 @@
       },
       isKeyDown: function(currentInput, keyName) {
         ensureKeyNameIsValid(keyName);
-        return currentInput[keyName] === true;
+        return currentInput.pressedKeys[keyName] === true;
       }
     };
   });
@@ -725,7 +767,7 @@
     };
   });
 
-  define("Logic", ["Input", "Entities"], function(Input, Entities) {
+  define("Logic", ["Input", "Entities", "Vec2"], function(Input, Entities, Vec2) {
     var createEntity, destroyEntity, entityFactories, module, nextEntityId;
     nextEntityId = 0;
     entityFactories = {
@@ -785,7 +827,8 @@
           movement = gameState.components.movements[entityId];
           angle = timeInS * movement.speed;
           position[0] = movement.radius * Math.cos(angle);
-          _results.push(position[1] = movement.radius * Math.sin(angle));
+          position[1] = movement.radius * Math.sin(angle);
+          _results.push(Vec2.add(position, currentInput.pointerPosition));
         }
         return _results;
       }
@@ -801,7 +844,7 @@
       };
       Input.preventDefaultFor(["up arrow", "down arrow", "left arrow", "right arrow", "space"]);
       display = Rendering.createDisplay();
-      currentInput = Input.createCurrentInput();
+      currentInput = Input.createCurrentInput(display);
       gameState = Logic.createGameState();
       renderState = Graphics.createRenderState();
       Logic.initGameState(gameState);
