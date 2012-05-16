@@ -1,4 +1,4 @@
-define "Logic", [ "Input", "Entities", "Vec2" ], ( Input, Entities, Vec2 ) ->
+module "Logic", [ "Input", "Entities", "Vec2" ], ( Input, Entities, Vec2 ) ->
 	nextEntityId = 0
 
 	entityFactories =

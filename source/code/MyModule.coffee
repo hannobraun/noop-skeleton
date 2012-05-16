@@ -1,3 +1,3 @@
-define "MyModule", [], ->
+module "MyModule", [], ->
 	module =
 		itIsAwesome: true

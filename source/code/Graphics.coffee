@@ -1,4 +1,4 @@
-define "Graphics", [ "Rendering", "Camera", "Vec2" ], ( Rendering, Camera, Vec2 ) ->
+module "Graphics", [ "Rendering", "Camera", "Vec2" ], ( Rendering, Camera, Vec2 ) ->
 	module =
 		createRenderState: ->
 			renderState =
