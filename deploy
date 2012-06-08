@@ -1,0 +1,10 @@
+DEPLOY_DIRECTORY=/tmp/noop-deploy-$RANDOM
+
+cp -r --dereference public $DEPLOY_DIRECTORY
+git checkout gh-pages
+cp -r $DEPLOY_DIRECTORY/* .
+
+git add `ls $DEPLOY_DIRECTORY`
+git commit -m "Deployment to gh-pages by deploy script."
+
+git checkout master
